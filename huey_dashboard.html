@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Huey 2026 — February Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --deep: #111411;
+    --card: #141914;
+    --card2: #1a1f1a;
+    --border: #2a332a;
+    --green: #2d5a27;
+    --green-bright: #4a9e42;
+    --green-glow: #5cb854;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --white: #f0f0ea;
+    --muted: #6b7a6b;
+    --red: #c94a4a;
+    --up: #5cb854;
+    --down: #c94a4a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 20% 0%, rgba(45,90,39,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(45,90,39,0.1) 0%, transparent 50%),
+      repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(255,255,255,0.008) 50px, rgba(255,255,255,0.008) 51px),
+      repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(255,255,255,0.008) 50px, rgba(255,255,255,0.008) 51px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 16px 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 48px 0 36px;
+    position: relative;
+  }
+
+  .header::after {
+    content: '';
+    display: block;
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 24px auto 0;
+  }
+
+  .header-flag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 8vw, 56px);
+    font-weight: 900;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--white) 0%, var(--gold-light) 50%, var(--white) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -1px;
+  }
+
+  .header-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  /* STAT CARDS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  @media (min-width: 600px) {
+    .stats-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 14px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .stat-card:hover { border-color: var(--green-bright); }
+
+  .stat-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1;
+  }
+
+  .stat-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* SECTION CARDS */
+  .section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .section:hover { border-color: rgba(74,158,66,0.3); }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  .section-header:hover { background: rgba(255,255,255,0.02); }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-icon {
+    width: 28px; height: 28px;
+    background: var(--green);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+
+  .section-count {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+
+  .chevron {
+    width: 20px; height: 20px;
+    color: var(--muted);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .section.open .chevron { transform: rotate(180deg); }
+
+  .section-body {
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+
+  .section.open .section-body { display: block; }
+
+  /* SEARCH */
+  .search-wrap {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+  }
+
+  .search-input {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    padding: 9px 14px 9px 36px;
+    outline: none;
+    transition: border-color 0.2s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7a6b' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 12px center;
+  }
+
+  .search-input:focus { border-color: var(--green-bright); }
+  .search-input::placeholder { color: var(--muted); }
+
+  /* LEADERBOARD TABLE */
+  .lb-table { width: 100%; border-collapse: collapse; }
+
+  .lb-table th {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+  }
+
+  .lb-table th.num { text-align: right; }
+
+  .lb-row {
+    border-bottom: 1px solid rgba(42,51,42,0.5);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .lb-row:last-child { border-bottom: none; }
+  .lb-row:hover { background: rgba(74,158,66,0.06); }
+  .lb-row.hidden { display: none; }
+
+  .lb-row td {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  .lb-row td.num {
+    text-align: right;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .rank-cell {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    width: 40px;
+  }
+
+  .rank-1 { color: var(--gold-light); }
+  .rank-2 { color: #c0c0c0; }
+  .rank-3 { color: #cd7f32; }
+  .rank-other { color: var(--muted); }
+
+  .player-name {
+    font-weight: 400;
+    color: var(--white);
+  }
+
+  .score-jan { color: var(--muted); }
+  .score-feb { color: var(--green-glow); }
+  .score-total {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--gold-light);
+    font-weight: 700;
+  }
+
+  .medal { font-size: 15px; }
+
+  /* TOP 3 PODIUM highlight */
+  .lb-row.top1 { background: rgba(201,168,76,0.06); }
+  .lb-row.top2 { background: rgba(192,192,192,0.04); }
+  .lb-row.top3 { background: rgba(205,127,50,0.04); }
+
+  /* MOVERS */
+  .movers-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  @media (max-width: 580px) {
+    .movers-split { grid-template-columns: 1fr; }
+  }
+
+  .movers-col { padding: 16px 20px; }
+  .movers-col:first-child { border-right: 1px solid var(--border); }
+
+  .movers-col-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .movers-col-title.up { color: var(--up); }
+  .movers-col-title.down { color: var(--down); }
+
+  .mover-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(42,51,42,0.4);
+    font-size: 13px;
+  }
+
+  .mover-row:last-child { border-bottom: none; }
+
+  .mover-name { color: var(--white); font-weight: 400; flex: 1; }
+
+  .mover-scores {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0 10px;
+  }
+
+  .mover-delta {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    min-width: 36px;
+    text-align: right;
+  }
+
+  .delta-up { color: var(--up); }
+  .delta-down { color: var(--down); }
+
+  /* IRON MEN */
+  .iron-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 16px 20px;
+  }
+
+  @media (min-width: 600px) {
+    .iron-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .iron-card {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+
+  .iron-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .iron-weeks {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .iron-dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .iron-avg {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold-light);
+  }
+
+  .iron-avg-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* WEEKLY BREAKDOWN */
+  .weekly-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 16px 20px;
+  }
+
+  @media (min-width: 600px) {
+    .weekly-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .week-card {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 12px;
+  }
+
+  .week-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .week-date {
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .week-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+
+  .week-stat-key {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .week-stat-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .week-winner {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .week-winner-name {
+    color: var(--gold-light);
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  /* JAN vs FEB */
+  .compare-table { width: 100%; border-collapse: collapse; }
+  .compare-table th {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 20px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+  }
+  .compare-table th:first-child { text-align: left; }
+
+  .compare-table td {
+    padding: 11px 20px;
+    font-size: 13px;
+    text-align: right;
+    border-bottom: 1px solid rgba(42,51,42,0.4);
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table td:first-child {
+    text-align: left;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .compare-jan { color: var(--muted); }
+  .compare-feb { color: var(--green-glow); }
+  .compare-delta-pos { color: var(--up); font-weight: 600; }
+  .compare-delta-neg { color: var(--down); font-weight: 600; }
+  .compare-delta-neu { color: var(--muted); }
+
+  /* PLAYER MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalIn 0.25s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .modal-top {
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 28px; height: 28px;
+    background: var(--border);
+    border: none;
+    border-radius: 50%;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+    line-height: 1;
+  }
+
+  .modal-close:hover { background: var(--red); color: white; }
+
+  .modal-player-rank {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .modal-player-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .modal-totals {
+    display: flex;
+    gap: 20px;
+  }
+
+  .modal-total-item { }
+
+  .modal-total-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .modal-total-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+
+  .modal-body { padding: 20px 24px; }
+
+  .modal-month-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    margin-top: 16px;
+  }
+
+  .modal-month-title:first-child { margin-top: 0; }
+
+  .score-bars { display: flex; flex-direction: column; gap: 8px; }
+
+  .score-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .score-bar-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    width: 50px;
+    flex-shrink: 0;
+  }
+
+  .score-bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+
+  .score-bar-fill.jan { background: var(--muted); }
+  .score-bar-fill.feb { background: var(--green-glow); }
+
+  .score-bar-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    width: 28px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .score-bar-val.jan-val { color: var(--muted); }
+  .score-bar-val.feb-val { color: var(--green-glow); }
+  .score-bar-val.empty { color: rgba(107,122,107,0.3); }
+
+  .modal-oom-section {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .oom-bars {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+  }
+
+  .oom-bar-group { flex: 1; text-align: center; }
+
+  .oom-bar-track {
+    height: 80px;
+    background: var(--border);
+    border-radius: 3px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+
+  .oom-bar-fill {
+    width: 100%;
+    border-radius: 3px 3px 0 0;
+    transition: height 0.6s ease;
+  }
+
+  .oom-bar-fill.jan { background: var(--muted); }
+  .oom-bar-fill.feb { background: var(--green-glow); }
+
+  .oom-bar-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 6px;
+  }
+
+  .oom-bar-val.jan { color: var(--muted); }
+  .oom-bar-val.feb { color: var(--green-glow); }
+
+  .oom-bar-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* Animate in */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .header { animation: fadeUp 0.5s ease both; }
+  .stats-grid { animation: fadeUp 0.5s 0.1s ease both; }
+  .section:nth-child(1) { animation: fadeUp 0.5s 0.15s ease both; }
+  .section:nth-child(2) { animation: fadeUp 0.5s 0.2s ease both; }
+  .section:nth-child(3) { animation: fadeUp 0.5s 0.25s ease both; }
+  .section:nth-child(4) { animation: fadeUp 0.5s 0.3s ease both; }
+  .section:nth-child(5) { animation: fadeUp 0.5s 0.35s ease both; }
+
+  .footer {
+    text-align: center;
+    padding: 24px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(107,122,107,0.4);
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="header-flag">⛳ Houghton Golf Club · 2026 Season</div>
+    <h1>HUEY 2026</h1>
+    <div class="header-sub">February Dashboard · 28 Feb 2026</div>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">OOM Leader</div>
+      <div class="stat-value" style="font-size:18px; padding-top:4px;">Ryan B.</div>
+      <div class="stat-sub">76 pts overall</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Feb Best Score</div>
+      <div class="stat-value">42</div>
+      <div class="stat-sub">Ryan Bytenski</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Feb Players</div>
+      <div class="stat-value">22</div>
+      <div class="stat-sub">played in Feb</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Iron Men</div>
+      <div class="stat-value">8</div>
+      <div class="stat-sub">all 4 weeks</div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div class="section open" id="sec-leaderboard">
+    <div class="section-header" onclick="toggleSection('sec-leaderboard')">
+      <div class="section-title">
+        <div class="section-icon">🏆</div>
+        <span class="section-label">OOM Leaderboard</span>
+        <span class="section-count">29 players</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="search-wrap">
+        <input class="search-input" type="text" placeholder="Search player..." id="lb-search" oninput="filterLeaderboard(this.value)">
+      </div>
+      <table class="lb-table">
+        <thead>
+          <tr>
+            <th style="width:44px">#</th>
+            <th>Player</th>
+            <th class="num">Jan</th>
+            <th class="num">Feb</th>
+            <th class="num">Total</th>
+          </tr>
+        </thead>
+        <tbody id="lb-body">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- JAN → FEB MOVERS -->
+  <div class="section" id="sec-movers">
+    <div class="section-header" onclick="toggleSection('sec-movers')">
+      <div class="section-title">
+        <div class="section-icon">📈</div>
+        <span class="section-label">Jan → Feb Movers</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="movers-split">
+        <div class="movers-col">
+          <div class="movers-col-title up">⬆ Top Improvers</div>
+          <div id="improvers-list"></div>
+        </div>
+        <div class="movers-col">
+          <div class="movers-col-title down">⬇ Biggest Decliners</div>
+          <div id="decliners-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IRON MEN -->
+  <div class="section" id="sec-iron">
+    <div class="section-header" onclick="toggleSection('sec-iron')">
+      <div class="section-title">
+        <div class="section-icon">💪</div>
+        <span class="section-label">Iron Men</span>
+        <span class="section-count">all 4 Feb weeks</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="iron-grid" id="iron-grid"></div>
+    </div>
+  </div>
+
+  <!-- WEEKLY BREAKDOWN -->
+  <div class="section" id="sec-weekly">
+    <div class="section-header" onclick="toggleSection('sec-weekly')">
+      <div class="section-title">
+        <div class="section-icon">⛳</div>
+        <span class="section-label">February Weekly Breakdown</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="weekly-grid" id="weekly-grid"></div>
+    </div>
+  </div>
+
+  <!-- JAN vs FEB COMPARISON -->
+  <div class="section" id="sec-compare">
+    <div class="section-header" onclick="toggleSection('sec-compare')">
+      <div class="section-title">
+        <div class="section-icon">🔄</div>
+        <span class="section-label">Jan vs Feb Comparison</span>
+      </div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="section-body">
+      <table class="compare-table" id="compare-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>January</th>
+            <th>February</th>
+            <th>+/−</th>
+          </tr>
+        </thead>
+        <tbody id="compare-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">Huey 2026 · Houghton Golf Club · Updated 28 Feb 2026</div>
+</div>
+
+<!-- PLAYER MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-top">
+      <button class="modal-close" onclick="closeModalBtn()">✕</button>
+      <div class="modal-player-rank" id="modal-rank"></div>
+      <div class="modal-player-name" id="modal-name"></div>
+      <div class="modal-totals" id="modal-totals"></div>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const players = [
+  { name: "Ryan Bytenski",     jan: 34, feb: 42, total: 76,
+    janWeeks: [32,34,27,33], febWeeks: [42,25,null,39] },
+  { name: "Daniel Bersiks",    jan: 39, feb: 36, total: 75,
+    janWeeks: [33,37,34,39], febWeeks: [33,null,36,null] },
+  { name: "Justin Shankman",   jan: 38, feb: 37, total: 75,
+    janWeeks: [34,37,null,38], febWeeks: [33,27,37,32] },
+  { name: "Gary Bernstein",    jan: 37, feb: 38, total: 75,
+    janWeeks: [null,30,null,37], febWeeks: [33,36,38,31] },
+  { name: "Brett Berman",      jan: 36, feb: 39, total: 75,
+    janWeeks: [35,35,null,36], febWeeks: [33,31,39,33] },
+  { name: "Michael Barnett",   jan: 38, feb: 36, total: 74,
+    janWeeks: [24,null,null,38], febWeeks: [null,36,null,34] },
+  { name: "David Nestadt",     jan: 37, feb: 36, total: 73,
+    janWeeks: [36,33,null,37], febWeeks: [30,36,36,null] },
+  { name: "Milton Maloon",     jan: 37, feb: 34, total: 71,
+    janWeeks: [33,37,null,30], febWeeks: [34,32,null,null] },
+  { name: "Joel Wilensky",     jan: 35, feb: 35, total: 70,
+    janWeeks: [35,31,null,33], febWeeks: [33,29,34,35] },
+  { name: "Ryan Nestadt",      jan: 34, feb: 35, total: 69,
+    janWeeks: [31,34,null,31], febWeeks: [35,30,30,30] },
+  { name: "Matthew Rosen",     jan: 36, feb: 33, total: 69,
+    janWeeks: [32,32,35,36], febWeeks: [32,33,null,null] },
+  { name: "Jared Nestadt",     jan: 37, feb: 32, total: 69,
+    janWeeks: [37,36,null,26], febWeeks: [28,null,29,32] },
+  { name: "David Farber",      jan: 37, feb: 30, total: 67,
+    janWeeks: [37,30,29,35], febWeeks: [28,30,29,null] },
+  { name: "Daniel Reitzer",    jan: 36, feb: 31, total: 67,
+    janWeeks: [null,null,36,30], febWeeks: [null,31,null,null] },
+  { name: "Daniel Egdes",      jan: 34, feb: 33, total: 67,
+    janWeeks: [34,null,null,null], febWeeks: [null,33,null,null] },
+  { name: "Jonathan Josset",   jan: 32, feb: 35, total: 67,
+    janWeeks: [25,32,null,32], febWeeks: [34,34,33,35] },
+  { name: "David de Agrella",  jan: 34, feb: 30, total: 64,
+    janWeeks: [29,33,null,34], febWeeks: [30,25,27,null] },
+  { name: "Ricci Cloud",       jan: 35, feb: 29, total: 64,
+    janWeeks: [null,34,35,32], febWeeks: [29,27,27,28] },
+  { name: "Jordan Kuming",     jan: 29, feb: 33, total: 62,
+    janWeeks: [null,29,null,null], febWeeks: [33,null,null,null] },
+  { name: "Devon Cohen",       jan: 32, feb: 29, total: 61,
+    janWeeks: [null,32,null,30], febWeeks: [29,null,null,null] },
+  { name: "Chad Jacobs",       jan: 34, feb: 27, total: 61,
+    janWeeks: [21,29,34,null], febWeeks: [27,23,null,null] },
+  { name: "Raphael Rom",       jan: 31, feb: 29, total: 60,
+    janWeeks: [31,null,null,null], febWeeks: [29,null,null,null] },
+  { name: "Daniel Kangisser",  jan: 31, feb: 29, total: 60,
+    janWeeks: [27,31,null,null], febWeeks: [29,29,27,29] },
+  { name: "Matthew Rottanburg",jan: 35, feb: 24, total: 59,
+    janWeeks: [null,null,35,29], febWeeks: [null,24,null,null] },
+  { name: "Jared Kangisser",   jan: 35, feb: 23, total: 58,
+    janWeeks: [35,null,null,null], febWeeks: [null,null,23,null] },
+  { name: "Michael Khethwa",   jan: 34, feb: 22, total: 56,
+    janWeeks: [null,null,null,34], febWeeks: [null,null,22,null] },
+  { name: "Cansin Borek",      jan: 0,  feb: 37, total: 37,
+    janWeeks: [null,null,null,null], febWeeks: [37,null,31,null] },
+  { name: "Ricky Joseph",      jan: 0,  feb: 31, total: 31,
+    janWeeks: [null,null,null,null], febWeeks: [31,28,null,null] },
+  { name: "Dean Sacharowitz",  jan: 0,  feb: 26, total: 26,
+    janWeeks: [null,null,null,null], febWeeks: [null,null,null,26] },
+];
+
+const weeklyData = [
+  { week: "Wk 1", date: "7 Feb", players: 0, avg: 0, high: 0, winner: "" },
+  { week: "Wk 2", date: "14 Feb", players: 0, avg: 0, high: 0, winner: "" },
+  { week: "Wk 3", date: "21 Feb", players: 0, avg: 0, high: 0, winner: "" },
+  { week: "Wk 4", date: "28 Feb", players: 0, avg: 0, high: 0, winner: "" },
+];
+
+// Calculate weekly stats from player data
+for (let w = 0; w < 4; w++) {
+  let scores = players.map(p => p.febWeeks[w]).filter(s => s !== null && s > 0);
+  weeklyData[w].players = scores.length;
+  weeklyData[w].avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : 0;
+  weeklyData[w].high = scores.length ? Math.max(...scores) : 0;
+  let winner = players.find(p => p.febWeeks[w] === weeklyData[w].high);
+  weeklyData[w].winner = winner ? winner.name.split(' ')[0] + ' ' + winner.name.split(' ')[1][0] + '.' : '-';
+}
+
+const ironMen = [
+  { name: "Gary Bernstein",   weeks: [33,36,38,31], avg: 34.5 },
+  { name: "Brett Berman",     weeks: [33,31,39,33], avg: 34.0 },
+  { name: "Jonathan Josset",  weeks: [34,34,33,35], avg: 34.0 },
+  { name: "Joel Wilensky",    weeks: [33,29,34,35], avg: 32.75 },
+  { name: "Justin Shankman",  weeks: [33,27,37,32], avg: 32.25 },
+  { name: "Ryan Nestadt",     weeks: [35,30,30,30], avg: 31.25 },
+  { name: "Daniel Kangisser", weeks: [29,29,27,29], avg: 28.5 },
+  { name: "Ricci Cloud",      weeks: [29,27,27,28], avg: 27.75 },
+];
+
+const improvers = [
+  { name: "Ryan Bytenski",   jan: 34, feb: 42, delta: 8 },
+  { name: "Jordan Kuming",   jan: 29, feb: 33, delta: 4 },
+  { name: "Brett Berman",    jan: 36, feb: 39, delta: 3 },
+  { name: "Jonathan Josset", jan: 32, feb: 35, delta: 3 },
+  { name: "Gary Bernstein",  jan: 37, feb: 38, delta: 1 },
+];
+
+const decliners = [
+  { name: "Jared Kangisser",    jan: 35, feb: 23, delta: -12 },
+  { name: "Michael Khethwa",    jan: 34, feb: 22, delta: -12 },
+  { name: "Matthew Rottanburg", jan: 35, feb: 24, delta: -11 },
+  { name: "David Farber",       jan: 37, feb: 30, delta: -7 },
+  { name: "Chad Jacobs",        jan: 34, feb: 27, delta: -7 },
+];
+
+const compareData = [
+  { metric: "Best OOM Score",     jan: 39, feb: 42 },
+  { metric: "Average OOM Score",  jan: 34.8, feb: 31.8 },
+  { metric: "Players Who Played", jan: 27, feb: 22 },
+  { metric: "Best Weekly Score",  jan: 39, feb: 42 },
+  { metric: "Avg Weekly Score",   jan: 32.4, feb: 31.2 },
+  { metric: "Total Weekly Rounds",jan: 68, feb: 63 },
+];
+
+// ===== RENDER =====
+
+// Leaderboard
+function renderLeaderboard() {
+  const tbody = document.getElementById('lb-body');
+  const medals = ['🥇','🥈','🥉'];
+  let html = '';
+  players.forEach((p, i) => {
+    const rank = i + 1;
+    const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
+    const rankLabel = rank <= 3 ? medals[i] : rank;
+    const rankColor = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-other';
+    const janVal = p.jan > 0 ? p.jan : '—';
+    const febVal = p.feb > 0 ? p.feb : '—';
+    html += `<tr class="lb-row ${rankClass}" data-idx="${i}" onclick="openModal(${i})">
+      <td class="rank-cell ${rankColor}">${rankLabel}</td>
+      <td class="player-name">${p.name}</td>
+      <td class="num score-jan">${janVal}</td>
+      <td class="num score-feb">${febVal}</td>
+      <td class="num score-total">${p.total}</td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+function filterLeaderboard(q) {
+  const rows = document.querySelectorAll('.lb-row');
+  const query = q.toLowerCase().trim();
+  rows.forEach(row => {
+    const name = row.querySelector('.player-name').textContent.toLowerCase();
+    row.classList.toggle('hidden', query && !name.includes(query));
+  });
+}
+
+// Movers
+function renderMovers() {
+  const impEl = document.getElementById('improvers-list');
+  const decEl = document.getElementById('decliners-list');
+
+  impEl.innerHTML = improvers.map(m => `
+    <div class="mover-row">
+      <span class="mover-name">${m.name}</span>
+      <span class="mover-scores">${m.jan} → ${m.feb}</span>
+      <span class="mover-delta delta-up">+${m.delta}</span>
+    </div>`).join('');
+
+  decEl.innerHTML = decliners.map(m => `
+    <div class="mover-row">
+      <span class="mover-name">${m.name}</span>
+      <span class="mover-scores">${m.jan} → ${m.feb}</span>
+      <span class="mover-delta delta-down">${m.delta}</span>
+    </div>`).join('');
+}
+
+// Iron Men
+function renderIronMen() {
+  const grid = document.getElementById('iron-grid');
+  grid.innerHTML = ironMen.map(p => `
+    <div class="iron-card">
+      <div class="iron-name">${p.name}</div>
+      <div class="iron-weeks">
+        ${p.weeks.map((s,i) => `<div class="iron-dot" title="Wk${i+1}: ${s}">${s}</div>`).join('')}
+      </div>
+      <div class="iron-avg">${p.avg.toFixed(1)}</div>
+      <div class="iron-avg-label">Feb avg</div>
+    </div>`).join('');
+}
+
+// Weekly Breakdown
+function renderWeekly() {
+  const grid = document.getElementById('weekly-grid');
+  grid.innerHTML = weeklyData.map((w, i) => `
+    <div class="week-card">
+      <div class="week-label">${w.week}</div>
+      <div class="week-date">${w.date}</div>
+      <div class="week-stat-row">
+        <span class="week-stat-key">Players</span>
+        <span class="week-stat-val">${w.players}</span>
+      </div>
+      <div class="week-stat-row">
+        <span class="week-stat-key">Avg</span>
+        <span class="week-stat-val">${w.avg}</span>
+      </div>
+      <div class="week-stat-row">
+        <span class="week-stat-key">High</span>
+        <span class="week-stat-val" style="color:var(--gold-light)">${w.high}</span>
+      </div>
+      <div class="week-winner">🏆 ${w.winner}</div>
+    </div>`).join('');
+}
+
+// Compare table
+function renderCompare() {
+  const tbody = document.getElementById('compare-body');
+  tbody.innerHTML = compareData.map(row => {
+    const delta = (row.feb - row.jan).toFixed(1);
+    const dClass = delta > 0 ? 'compare-delta-pos' : delta < 0 ? 'compare-delta-neg' : 'compare-delta-neu';
+    const dPrefix = delta > 0 ? '+' : '';
+    return `<tr>
+      <td>${row.metric}</td>
+      <td class="compare-jan">${row.jan}</td>
+      <td class="compare-feb">${row.feb}</td>
+      <td class="${dClass}">${dPrefix}${delta}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ===== MODAL =====
+function openModal(idx) {
+  const p = players[idx];
+  const rank = idx + 1;
+  const medals = ['🥇','🥈','🥉'];
+  const rankLabel = rank <= 3 ? medals[idx] + ' ' + ['1st','2nd','3rd'][idx] + ' Place' : `#${rank} Overall`;
+
+  document.getElementById('modal-rank').textContent = rankLabel;
+  document.getElementById('modal-name').textContent = p.name;
+
+  document.getElementById('modal-totals').innerHTML = `
+    <div class="modal-total-item">
+      <div class="modal-total-label">Total OOM</div>
+      <div class="modal-total-val" style="color:var(--gold-light)">${p.total}</div>
+    </div>
+    <div class="modal-total-item">
+      <div class="modal-total-label">January</div>
+      <div class="modal-total-val" style="color:var(--muted)">${p.jan > 0 ? p.jan : '—'}</div>
+    </div>
+    <div class="modal-total-item">
+      <div class="modal-total-label">February</div>
+      <div class="modal-total-val" style="color:var(--green-glow)">${p.feb > 0 ? p.feb : '—'}</div>
+    </div>`;
+
+  const maxScore = 50;
+  const janDates = ['10 Jan','17 Jan','24 Jan','31 Jan'];
+  const febDates = ['7 Feb','14 Feb','21 Feb','28 Feb'];
+
+  let bodyHtml = '';
+
+  // Jan weeks
+  const hasJan = p.janWeeks.some(s => s !== null);
+  if (hasJan) {
+    bodyHtml += `<div class="modal-month-title">January — Weekly Scores</div><div class="score-bars">`;
+    p.janWeeks.forEach((s, i) => {
+      const pct = s ? (s / maxScore * 100) : 0;
+      bodyHtml += `<div class="score-bar-row">
+        <span class="score-bar-label">${janDates[i]}</span>
+        <div class="score-bar-track"><div class="score-bar-fill jan" style="width:${pct}%"></div></div>
+        <span class="score-bar-val ${s ? 'jan-val' : 'empty'}">${s || '—'}</span>
+      </div>`;
+    });
+    bodyHtml += `</div>`;
+  }
+
+  // Feb weeks
+  const hasFeb = p.febWeeks.some(s => s !== null);
+  if (hasFeb) {
+    bodyHtml += `<div class="modal-month-title">February — Weekly Scores</div><div class="score-bars">`;
+    p.febWeeks.forEach((s, i) => {
+      const pct = s ? (s / maxScore * 100) : 0;
+      bodyHtml += `<div class="score-bar-row">
+        <span class="score-bar-label">${febDates[i]}</span>
+        <div class="score-bar-track"><div class="score-bar-fill feb" style="width:${pct}%"></div></div>
+        <span class="score-bar-val ${s ? 'feb-val' : 'empty'}">${s || '—'}</span>
+      </div>`;
+    });
+    bodyHtml += `</div>`;
+  }
+
+  // OOM bar chart
+  if (p.jan > 0 || p.feb > 0) {
+    const maxOom = 50;
+    const janPct = p.jan > 0 ? (p.jan / maxOom * 100) : 0;
+    const febPct = p.feb > 0 ? (p.feb / maxOom * 100) : 0;
+    bodyHtml += `
+    <div class="modal-oom-section">
+      <div class="modal-month-title">OOM Score Comparison</div>
+      <div class="oom-bars">
+        <div class="oom-bar-group">
+          <div class="oom-bar-track">
+            <div class="oom-bar-fill jan" style="height:${janPct}%"></div>
+          </div>
+          <div class="oom-bar-val jan">${p.jan > 0 ? p.jan : '—'}</div>
+          <div class="oom-bar-label">January</div>
+        </div>
+        <div class="oom-bar-group">
+          <div class="oom-bar-track">
+            <div class="oom-bar-fill feb" style="height:${febPct}%"></div>
+          </div>
+          <div class="oom-bar-val feb">${p.feb > 0 ? p.feb : '—'}</div>
+          <div class="oom-bar-label">February</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('modal-body').innerHTML = bodyHtml;
+  document.getElementById('modal-overlay').classList.add('active');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('active');
+  }
+}
+
+function closeModalBtn() {
+  document.getElementById('modal-overlay').classList.remove('active');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('modal-overlay').classList.remove('active');
+});
+
+// ===== SECTIONS =====
+function toggleSection(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// ===== INIT =====
+renderLeaderboard();
+renderMovers();
+renderIronMen();
+renderWeekly();
+renderCompare();
+</script>
+</body>
+</html>
